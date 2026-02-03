@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { ProjectsModule } from './projects/projects.module';
 import { EnsModule } from './ens/ens.module';
 import { CircleModule } from './circle/circle.module';
+import { IndexerModule } from './indexer/indexer.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CircleModule } from './circle/circle.module';
     ProjectsModule,
     EnsModule,
     CircleModule,
+    IndexerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

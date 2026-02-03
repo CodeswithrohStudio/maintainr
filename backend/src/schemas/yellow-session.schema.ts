@@ -23,3 +23,4 @@ export class YellowSession extends Document {
 }
 
 export const YellowSessionSchema = SchemaFactory.createForClass(YellowSession);
+export type YellowSessionDocument = YellowSession & Document;

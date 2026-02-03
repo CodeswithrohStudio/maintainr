@@ -7,7 +7,12 @@ import { Request } from 'express';
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  @Post('register')
+  @Get()
+  async getAllProjects() {
+    return this.projectsService.findAll();
+  }
+
+  @Post()
   @UseGuards(JwtAuthGuard)
   async registerProject(@Body() body: any, @Req() req: Request) {
     const user = req.user as any;

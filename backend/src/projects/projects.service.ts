@@ -14,6 +14,10 @@ export class ProjectsService {
     return project.save();
   }
 
+  async findAll(): Promise<Project[]> {
+    return this.projectModel.find().exec();
+  }
+
   async registerProject(data: {
     ownerId: string;
     githubRepoUrl: string;

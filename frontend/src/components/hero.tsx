@@ -29,7 +29,7 @@ export function Hero() {
               </Link>
             </Button>
             
-            <Button variant="outline" size="lg">
+            <Button size="lg" variant="outline">
               <Link href="/register" className="flex items-center">
                 <Github className="mr-2 h-4 w-4" />
                 Register Your Project

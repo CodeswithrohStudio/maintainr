@@ -19,7 +19,7 @@ export class AuthService {
     const user = req.user as any;
     
     if (!user) {
-      return res.redirect(`${process.env.FRONTEND_URL}/?error=auth_failed`);
+      return res.status(400).json({ error: 'Authentication failed' });
     }
 
     // Find or create user in database
@@ -37,8 +37,18 @@ export class AuthService {
       handle: dbUser.handle,
     });
 
-    // Redirect to frontend with token
-    return res.redirect(`${process.env.FRONTEND_URL}/auth/callback?token=${token}`);
+    // Return token and user data
+    return res.json({
+      token,
+      user: {
+        _id: dbUser._id,
+        githubId: dbUser.githubId,
+        handle: dbUser.handle,
+        walletAddress: dbUser.walletAddress,
+        ensName: dbUser.ensName,
+        createdAt: dbUser.createdAt,
+      }
+    });
   }
 
   async validateUser(githubId: string): Promise<any> {

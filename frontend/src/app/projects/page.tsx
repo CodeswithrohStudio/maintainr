@@ -16,7 +16,7 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+      <div className="min-h-screen bg-orange-50">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <Coffee className="h-16 w-16 text-orange-400 mx-auto mb-6 animate-pulse" />
@@ -30,7 +30,7 @@ export default function ProjectsPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+      <div className="min-h-screen bg-orange-50">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center max-w-md mx-auto">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -53,19 +53,19 @@ export default function ProjectsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+    <div className="min-h-screen bg-orange-50">
       {/* Decorative elements */}
-      <div className="absolute top-20 right-10 w-32 h-32 bg-yellow-200 rounded-full opacity-10 blur-2xl" />
-      <div className="absolute bottom-40 left-20 w-40 h-40 bg-pink-200 rounded-full opacity-10 blur-2xl" />
+      <div className="absolute top-20 right-10 w-32 h-32 bg-yellow-100 rounded-full opacity-20" />
+      <div className="absolute bottom-40 left-20 w-40 h-40 bg-pink-100 rounded-full opacity-20" />
       
       <div className="container mx-auto px-4 py-16 relative">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-orange-200 mb-6">
+          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full border border-orange-200 mb-6">
             <Sparkles className="w-4 h-4 text-orange-500 mr-2" />
             <span className="text-sm font-medium text-orange-700">Discover amazing builders</span>
           </div>
           
-          <h1 className="text-5xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+          <h1 className="text-5xl font-bold mb-4 text-orange-600">
             Coffee Shops
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -77,9 +77,9 @@ export default function ProjectsPage() {
         {projects.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project) => (
-              <Card key={project._id} className="group hover:shadow-xl transition-all duration-300 border-orange-100 bg-white/80 backdrop-blur-sm overflow-hidden">
+              <Card key={project._id} className="group hover:shadow-xl transition-all duration-300 border-orange-100 bg-white overflow-hidden">
                 {/* Header with gradient */}
-                <div className="h-2 bg-gradient-to-r from-orange-400 to-pink-400" />
+                <div className="h-2 bg-orange-400" />
                 
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
@@ -99,7 +99,7 @@ export default function ProjectsPage() {
                         </a>
                       </CardDescription>
                     </div>
-                    <div className="w-10 h-10 bg-gradient-to-br from-orange-100 to-pink-100 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
                       <Coffee className="h-5 w-5 text-orange-600" />
                     </div>
                   </div>
@@ -126,7 +126,7 @@ export default function ProjectsPage() {
                     </p>
                     <div className="space-y-2">
                       {project.recipients.map((recipient, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-orange-50/50 rounded-lg">
+                        <div key={index} className="flex items-center justify-between p-2 bg-orange-50 rounded-lg">
                           <span className="text-sm text-gray-600 font-mono">
                             {recipient.slice(0, 6)}...{recipient.slice(-4)}
                           </span>
@@ -139,7 +139,7 @@ export default function ProjectsPage() {
                   </div>
 
                   <Button 
-                    className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all duration-300"
                   >
                     <Coffee className="mr-2 h-4 w-4" />
                     Buy a Coffee
@@ -151,7 +151,7 @@ export default function ProjectsPage() {
         ) : (
           <div className="text-center py-20">
             <div className="max-w-md mx-auto">
-              <div className="w-24 h-24 bg-gradient-to-br from-orange-100 to-pink-100 rounded-3xl flex items-center justify-center mx-auto mb-8">
+              <div className="w-24 h-24 bg-orange-100 rounded-3xl flex items-center justify-center mx-auto mb-8">
                 <Coffee className="h-12 w-12 text-orange-500" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -161,7 +161,7 @@ export default function ProjectsPage() {
                 Be the first to open your coffee shop and share your creation with the world!
               </p>
               <Link href="/register">
-                <Button className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-lg">
+                <Button className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg">
                   <Sparkles className="mr-2 h-5 w-5" />
                   Open Your Coffee Shop
                 </Button>

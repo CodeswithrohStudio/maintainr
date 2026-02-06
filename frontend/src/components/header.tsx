@@ -36,7 +36,7 @@ export function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-orange-100">
+    <header className="sticky top-0 z-50 bg-orange-50 border-b border-orange-200">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center space-x-2 group">
@@ -44,7 +44,7 @@ export function Header() {
               <Coffee className="h-6 w-6 text-orange-500 group-hover:rotate-12 transition-transform" />
               <Heart className="h-3 w-3 text-pink-500 absolute -top-1 -right-1" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-orange-600">
               Maintainr
             </span>
           </Link>
@@ -76,7 +76,7 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button 
                     variant="outline" 
-                    className="border-orange-200 text-orange-700 hover:bg-orange-50 flex items-center space-x-2"
+                    className="border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center space-x-2"
                   >
                     <User className="h-4 w-4" />
                     <span className="hidden sm:inline font-medium">@{user.handle}</span>
@@ -105,7 +105,7 @@ export function Header() {
             ) : (
               <Button 
                 onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`}
-                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-md hover:shadow-lg transition-all"
+                className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all"
               >
                 <Coffee className="mr-2 h-4 w-4" />
                 Start Brewing

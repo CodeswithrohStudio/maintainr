@@ -132,7 +132,7 @@ export default function RegisterPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+      <div className="min-h-screen bg-orange-50">
         <div className="container mx-auto px-4 py-8 max-w-2xl">
           <div className="mb-8">
             <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
@@ -143,7 +143,7 @@ export default function RegisterPage() {
             </p>
           </div>
 
-          <Card className="border-orange-100 bg-white/80 backdrop-blur-sm">
+          <Card className="border-orange-100 bg-white">
             <CardContent className="text-center py-16">
               <Coffee className="h-20 w-20 text-orange-400 mx-auto mb-6" />
               <h3 className="text-2xl font-semibold mb-4 text-gray-800">
@@ -154,7 +154,7 @@ export default function RegisterPage() {
               </p>
               <Button 
                 onClick={() => router.push('/')}
-                className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-lg"
+                className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg"
               >
                 <Coffee className="mr-2 h-5 w-5" />
                 Start Brewing
@@ -168,9 +168,9 @@ export default function RegisterPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+      <div className="min-h-screen bg-orange-50">
         <div className="container mx-auto px-4 py-8 max-w-2xl">
-          <Card className="border-green-100 bg-white/80 backdrop-blur-sm">
+          <Card className="border-green-100 bg-white">
             <CardContent className="text-center py-16">
               <div className="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Sparkles className="h-10 w-10 text-green-600" />
@@ -184,7 +184,7 @@ export default function RegisterPage() {
               </p>
               <Button 
                 onClick={() => router.push('/projects')}
-                className="bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white border-0 shadow-lg"
+                className="bg-green-500 hover:bg-green-600 text-white border-0 shadow-lg"
               >
                 <Coffee className="mr-2 h-5 w-5" />
                 Visit Other Builders
@@ -197,10 +197,10 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-pink-50 to-purple-50">
+    <div className="min-h-screen bg-orange-50">
       {/* Decorative elements */}
-      <div className="absolute top-40 left-10 w-32 h-32 bg-yellow-200 rounded-full opacity-10 blur-2xl" />
-      <div className="absolute top-60 right-20 w-40 h-40 bg-pink-200 rounded-full opacity-10 blur-2xl" />
+      <div className="absolute top-40 left-10 w-32 h-32 bg-yellow-100 rounded-full opacity-20" />
+      <div className="absolute top-60 right-20 w-40 h-40 bg-pink-100 rounded-full opacity-20" />
       
       <div className="container mx-auto px-4 py-8 max-w-2xl relative">
         <div className="mb-8">
@@ -217,9 +217,9 @@ export default function RegisterPage() {
           )}
         </div>
 
-        <Card className="border-orange-100 bg-white/80 backdrop-blur-sm shadow-lg">
+        <Card className="border-orange-100 bg-white shadow-lg">
           <CardHeader className="text-center pb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-100 to-pink-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="w-16 h-16 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <Coffee className="h-8 w-8 text-orange-600" />
             </div>
             <CardTitle className="text-2xl text-gray-800">Open Your Coffee Shop</CardTitle>
@@ -264,7 +264,7 @@ export default function RegisterPage() {
               </div>
 
               {formData.recipients.map((recipient, index) => (
-                <div key={index} className="space-y-4 p-6 border border-orange-100 rounded-2xl bg-gradient-to-br from-orange-50/50 to-pink-50/50">
+                <div key={index} className="p-6 border border-orange-100 rounded-2xl bg-orange-50">
                   <div className="flex items-center justify-between mb-4">
                     <Label className="text-gray-700 font-medium">Crew Member {index + 1}</Label>
                     {formData.recipients.length > 1 && (
@@ -324,7 +324,7 @@ export default function RegisterPage() {
               <Button 
                 type="submit" 
                 disabled={loading} 
-                className="w-full bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 py-4 text-lg"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-lg hover:shadow-xl transition-all duration-300 py-4 text-lg"
               >
                 {loading ? (
                   <>

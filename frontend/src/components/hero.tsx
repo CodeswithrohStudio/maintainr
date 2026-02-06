@@ -3,11 +3,7 @@
 import { Button } from './ui/button'
 import { Coffee, Heart, Zap, Shield } from 'lucide-react'
 import Link from 'next/link'
-import dynamic from 'next/dynamic'
-
-const ThreeBackground = dynamic(() => import('./three-background').then(mod => ({ default: mod.ThreeBackground })), {
-  ssr: false,
-})
+import { ThreeBackground } from './three-background'
 
 export function Hero() {
   return (

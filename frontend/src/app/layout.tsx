@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { SimpleProviders } from "@/components/providers-simple";
+import { PrivyProviderWrapper } from "@/providers/privy-provider";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 
@@ -31,15 +32,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SimpleProviders>
-          <div className="min-h-screen flex flex-col">
-            <Header />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </div>
-        </SimpleProviders>
+        <PrivyProviderWrapper>
+          <SimpleProviders>
+            <div className="min-h-screen flex flex-col">
+              <Header />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </SimpleProviders>
+        </PrivyProviderWrapper>
       </body>
     </html>
   );

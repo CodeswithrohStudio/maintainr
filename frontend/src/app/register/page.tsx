@@ -6,15 +6,19 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { AlertCircle, Plus, Trash2, Coffee, Sparkles, Github, Wallet, Check, ArrowRight } from 'lucide-react'
+import { AlertCircle, Plus, Trash2, Coffee, Sparkles, Wallet, Check, ArrowRight } from 'lucide-react'
+import { usePrivy } from '@privy-io/react-auth'
 
 export default function RegisterPage() {
   const router = useRouter()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [user, setUser] = useState<{ handle: string; githubId: string; _id: string } | null>(null)
+  const { ready, authenticated, user, login } = usePrivy()
   const [currentStep, setCurrentStep] = useState(1)
   const [formData, setFormData] = useState({
-    githubRepoUrl: '',
+    projectName: '',
+    bio: '',
+    githubUrl: '',
+    twitterUrl: '',
+    websiteUrl: '',
     recipients: [''],
     splits: [10000],
   })
@@ -24,15 +28,16 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('auth_token')
-    const userData = localStorage.getItem('user_data')
-    
-    if (token && userData) {
-      setIsAuthenticated(true)
-      setUser(JSON.parse(userData))
+    if (ready && authenticated && user?.wallet) {
+      const walletAddress = user.wallet.address
+      if (walletAddress) {
+        setFormData(prev => ({
+          ...prev,
+          recipients: [walletAddress],
+        }))
+      }
     }
-  }, [])
+  }, [ready, authenticated, user])
 
   const addRecipient = () => {
     setFormData(prev => ({
@@ -79,20 +84,19 @@ export default function RegisterPage() {
 
       // Validate all recipients have addresses
       if (formData.recipients.some(r => !r.trim())) {
-        setError('All coffee recipients need an address 💌')
+        setError('All payment recipients need a wallet address')
         return
       }
 
-      // Validate GitHub repo URL
-      if (!formData.githubRepoUrl.trim()) {
-        setError('Your GitHub home needs an address 🏠')
+      // Validate project name
+      if (!formData.projectName.trim()) {
+        setError('Please enter your name or project name')
         return
       }
 
-      // Get auth token
-      const token = localStorage.getItem('auth_token')
-      if (!token) {
-        setError('You need to login first to share your project 🤗')
+      // Get wallet address from Privy
+      if (!user?.wallet?.address) {
+        setError('Please connect your wallet first')
         return
       }
 
@@ -101,10 +105,14 @@ export default function RegisterPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          githubRepoUrl: formData.githubRepoUrl,
+          walletAddress: user.wallet.address,
+          projectName: formData.projectName,
+          bio: formData.bio,
+          githubUrl: formData.githubUrl,
+          twitterUrl: formData.twitterUrl,
+          websiteUrl: formData.websiteUrl,
           recipients: formData.recipients,
           splits: formData.splits
         })
@@ -131,7 +139,18 @@ export default function RegisterPage() {
     }
   }
 
-  if (!isAuthenticated) {
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <Coffee className="h-12 w-12 text-orange-500 animate-pulse mx-auto mb-4" />
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (!authenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white">
         <div className="container mx-auto px-4 py-16 max-w-4xl">
@@ -148,29 +167,29 @@ export default function RegisterPage() {
             <CardContent className="p-12">
               <div className="text-center space-y-8">
                 <div className="w-20 h-20 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
-                  <Github className="h-10 w-10 text-orange-600" />
+                  <Wallet className="h-10 w-10 text-orange-600" />
                 </div>
                 
                 <div>
                   <h3 className="text-2xl font-bold mb-3 text-gray-900">
-                    Connect with GitHub
+                    Connect Your Wallet
                   </h3>
                   <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                    Sign in with GitHub to verify your identity and link your repositories
+                    Connect your wallet to receive donations directly to your address
                   </p>
                 </div>
 
                 <Button 
-                  onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`}
+                  onClick={login}
                   size="lg"
-                  className="bg-gray-900 hover:bg-gray-800 text-white px-8 py-6 text-lg font-semibold"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 text-lg font-semibold"
                 >
-                  <Github className="mr-2 h-5 w-5" />
-                  Continue with GitHub
+                  <Wallet className="mr-2 h-5 w-5" />
+                  Connect Wallet
                 </Button>
 
                 <p className="text-sm text-gray-500">
-                  We&apos;ll never post anything without your permission
+                  Supports MetaMask, WalletConnect, Coinbase Wallet, and more
                 </p>
               </div>
             </CardContent>
@@ -235,7 +254,7 @@ export default function RegisterPage() {
           </div>
           <div className="flex justify-center mt-4">
             <p className="text-sm text-gray-600">
-              {currentStep === 1 && 'Project Details'}
+              {currentStep === 1 && 'Profile Details'}
               {currentStep === 2 && 'Payment Setup'}
               {currentStep === 3 && 'Review & Launch'}
             </p>
@@ -250,48 +269,109 @@ export default function RegisterPage() {
               </div>
             </div>
             <CardTitle className="text-3xl font-bold text-gray-900">
-              {currentStep === 1 && 'Tell us about your project'}
+              {currentStep === 1 && 'Create your developer profile'}
               {currentStep === 2 && 'Set up payment details'}
               {currentStep === 3 && 'Review and launch'}
             </CardTitle>
-            {user && (
+            {user?.wallet?.address && (
               <p className="text-sm text-gray-500 mt-2">
-                Creating page for <span className="font-semibold text-orange-600">@{user.handle}</span>
+                Creating page for <span className="font-semibold text-orange-600 font-mono">
+                  {user.wallet.address.slice(0, 6)}...{user.wallet.address.slice(-4)}
+                </span>
               </p>
             )}
           </CardHeader>
           
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-8">
-              {/* Step 1: Project Details */}
+              {/* Step 1: Profile Details */}
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div className="space-y-3">
-                    <Label htmlFor="githubRepoUrl" className="text-base font-semibold text-gray-900">
-                      GitHub Repository URL
+                    <Label htmlFor="projectName" className="text-base font-semibold text-gray-900">
+                      Your Name / Project Name
                     </Label>
                     <Input
-                      id="githubRepoUrl"
-                      type="url"
-                      placeholder="https://github.com/username/repository"
-                      value={formData.githubRepoUrl}
-                      onChange={(e) => setFormData(prev => ({ ...prev, githubRepoUrl: e.target.value }))}
+                      id="projectName"
+                      type="text"
+                      placeholder="John Doe / My Awesome Project"
+                      value={formData.projectName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, projectName: e.target.value }))}
                       required
                       className="h-12 text-base"
                     />
                     <p className="text-sm text-gray-500">
-                      Link to your open source project repository
+                      What should supporters call you?
                     </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label htmlFor="bio" className="text-base font-semibold text-gray-900">
+                      Bio
+                    </Label>
+                    <textarea
+                      id="bio"
+                      placeholder="Tell supporters what you're working on..."
+                      value={formData.bio}
+                      onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
+                      rows={4}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                    />
+                    <p className="text-sm text-gray-500">
+                      Share your story, what you build, and why you do it
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label htmlFor="githubUrl" className="text-base font-semibold text-gray-900">
+                      GitHub Profile (Optional)
+                    </Label>
+                    <Input
+                      id="githubUrl"
+                      type="url"
+                      placeholder="https://github.com/username"
+                      value={formData.githubUrl}
+                      onChange={(e) => setFormData(prev => ({ ...prev, githubUrl: e.target.value }))}
+                      className="h-12 text-base"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label htmlFor="twitterUrl" className="text-base font-semibold text-gray-900">
+                      Twitter / X (Optional)
+                    </Label>
+                    <Input
+                      id="twitterUrl"
+                      type="url"
+                      placeholder="https://twitter.com/username"
+                      value={formData.twitterUrl}
+                      onChange={(e) => setFormData(prev => ({ ...prev, twitterUrl: e.target.value }))}
+                      className="h-12 text-base"
+                    />
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label htmlFor="websiteUrl" className="text-base font-semibold text-gray-900">
+                      Website (Optional)
+                    </Label>
+                    <Input
+                      id="websiteUrl"
+                      type="url"
+                      placeholder="https://yourwebsite.com"
+                      value={formData.websiteUrl}
+                      onChange={(e) => setFormData(prev => ({ ...prev, websiteUrl: e.target.value }))}
+                      className="h-12 text-base"
+                    />
                   </div>
 
                   <Button 
                     type="button"
                     onClick={() => {
-                      if (formData.githubRepoUrl) {
+                      if (formData.projectName.trim()) {
                         setCurrentStep(2)
                         setError('')
                       } else {
-                        setError('Please enter your GitHub repository URL')
+                        setError('Please enter your name or project name')
                       }
                     }}
                     className="w-full bg-orange-500 hover:bg-orange-600 text-white py-6 text-lg font-semibold"
@@ -412,10 +492,38 @@ export default function RegisterPage() {
                   <div className="bg-orange-50 rounded-xl p-6 space-y-4">
                     <h3 className="font-semibold text-lg text-gray-900">Review Your Details</h3>
                     
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <div>
-                        <p className="text-sm text-gray-600">Repository</p>
-                        <p className="font-medium text-gray-900 break-all">{formData.githubRepoUrl}</p>
+                        <p className="text-sm text-gray-600">Name / Project</p>
+                        <p className="font-medium text-gray-900">{formData.projectName}</p>
+                      </div>
+
+                      {formData.bio && (
+                        <div>
+                          <p className="text-sm text-gray-600">Bio</p>
+                          <p className="font-medium text-gray-900">{formData.bio}</p>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-1 gap-3">
+                        {formData.githubUrl && (
+                          <div>
+                            <p className="text-sm text-gray-600">GitHub</p>
+                            <p className="font-medium text-gray-900 text-sm break-all">{formData.githubUrl}</p>
+                          </div>
+                        )}
+                        {formData.twitterUrl && (
+                          <div>
+                            <p className="text-sm text-gray-600">Twitter</p>
+                            <p className="font-medium text-gray-900 text-sm break-all">{formData.twitterUrl}</p>
+                          </div>
+                        )}
+                        {formData.websiteUrl && (
+                          <div>
+                            <p className="text-sm text-gray-600">Website</p>
+                            <p className="font-medium text-gray-900 text-sm break-all">{formData.websiteUrl}</p>
+                          </div>
+                        )}
                       </div>
                       
                       <div>

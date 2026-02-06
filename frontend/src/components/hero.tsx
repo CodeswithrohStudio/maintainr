@@ -18,18 +18,18 @@ export function Hero() {
             <div className="text-left space-y-8">
               <div className="inline-flex items-center px-4 py-2 bg-orange-100 rounded-full">
                 <Coffee className="w-4 h-4 text-orange-600 mr-2" />
-                <span className="text-sm font-medium text-orange-800">Fund Open Source with Crypto</span>
+                <span className="text-sm font-medium text-orange-800">Decentralized Tipping for Developers</span>
               </div>
               
               <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
-                <span className="text-gray-900">Get support for</span>
+                <span className="text-gray-900">Build your portfolio,</span>
                 <br />
-                <span className="text-orange-600">your open source work</span>
+                <span className="text-orange-600">get tipped in crypto</span>
               </h1>
               
               <p className="text-xl text-gray-600 leading-relaxed">
-                Maintainr makes it easy for anyone to support your open source projects with cryptocurrency. 
-                Get paid in USDC instantly, no middleman, no fees.
+                Create your developer profile, share your work, and receive tips directly to your wallet. 
+                No middleman, instant payouts in USDC.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4">

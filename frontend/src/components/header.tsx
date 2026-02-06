@@ -1,39 +1,12 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Heart, User, LogOut, Coffee } from 'lucide-react'
 import { Button } from './ui/button'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu'
+import { Coffee, Wallet, Heart } from 'lucide-react'
+import { usePrivy } from '@privy-io/react-auth'
 
 export function Header() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [user, setUser] = useState<{ handle: string; githubId: string; _id: string } | null>(null)
-
-  useEffect(() => {
-    // Check if user is authenticated
-    const token = localStorage.getItem('auth_token')
-    const userData = localStorage.getItem('user_data')
-    
-    if (token && userData) {
-      setIsAuthenticated(true)
-      setUser(JSON.parse(userData))
-    }
-  }, [])
-
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token')
-    localStorage.removeItem('user_data')
-    setIsAuthenticated(false)
-    setUser(null)
-    window.location.href = '/'
-  }
+  const { ready, authenticated, user, login, logout } = usePrivy()
 
   return (
     <header className="sticky top-0 z-50 bg-orange-50 border-b border-orange-200">
@@ -71,44 +44,44 @@ export function Header() {
           </nav>
 
           <div className="flex items-center space-x-4">
-            {isAuthenticated && user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            {!ready ? (
+              <Button disabled className="bg-gray-300">
+                Loading...
+              </Button>
+            ) : authenticated && user ? (
+              <div className="flex items-center space-x-3">
+                <Link href="/dashboard">
                   <Button 
                     variant="outline" 
-                    className="border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center space-x-2"
+                    className="border-orange-200 text-orange-700 hover:bg-orange-100"
                   >
-                    <User className="h-4 w-4" />
-                    <span className="hidden sm:inline font-medium">@{user.handle}</span>
+                    Dashboard
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="border-orange-100">
-                  <DropdownMenuItem asChild>
-                    <Link href="/register" className="flex items-center space-x-2">
-                      <Coffee className="h-4 w-4" />
-                      <span>Create Page</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="flex items-center space-x-2">
-                      <Heart className="h-4 w-4" />
-                      <span>My Coffee Fund</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-orange-100" />
-                  <DropdownMenuItem onClick={handleLogout} className="flex items-center space-x-2 text-red-600">
-                    <LogOut className="h-4 w-4" />
-                    <span>Take a Break</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </Link>
+                <Button 
+                  variant="outline" 
+                  className="border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center space-x-2"
+                >
+                  <Wallet className="h-4 w-4" />
+                  <span className="hidden sm:inline font-mono text-sm">
+                    {user.wallet?.address?.slice(0, 6)}...{user.wallet?.address?.slice(-4)}
+                  </span>
+                </Button>
+                <Button 
+                  onClick={logout}
+                  variant="ghost"
+                  className="text-gray-600 hover:text-orange-600"
+                >
+                  Disconnect
+                </Button>
+              </div>
             ) : (
               <Button 
-                onClick={() => window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/github`}
+                onClick={login}
                 className="bg-orange-500 hover:bg-orange-600 text-white border-0 shadow-md hover:shadow-lg transition-all"
               >
-                <Coffee className="mr-2 h-4 w-4" />
-                Start Brewing
+                <Wallet className="mr-2 h-4 w-4" />
+                Connect Wallet
               </Button>
             )}
           </div>

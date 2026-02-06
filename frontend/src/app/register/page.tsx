@@ -147,9 +147,9 @@ export default function RegisterPage() {
         setSuccess(true)
         console.log('Project registered successfully:', project)
         
-        // Redirect to projects page after 2 seconds
+        // Redirect to dashboard after 2 seconds
         setTimeout(() => {
-          router.push('/projects')
+          router.push('/dashboard')
         }, 2000)
       } else {
         const errorData = await response.json()

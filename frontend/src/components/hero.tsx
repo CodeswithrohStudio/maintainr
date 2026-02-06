@@ -1,105 +1,150 @@
 'use client'
 
 import { Button } from './ui/button'
-import { ArrowRight, Heart, Coffee, Sparkles, Users } from 'lucide-react'
+import { Coffee, Heart, Zap, Shield } from 'lucide-react'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
+
+const ThreeBackground = dynamic(() => import('./three-background').then(mod => ({ default: mod.ThreeBackground })), {
+  ssr: false,
+})
 
 export function Hero() {
   return (
-    <section className="relative py-24 px-4 overflow-hidden">
-      {/* Background with pastel colors */}
-      <div className="absolute inset-0 bg-orange-50" />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-orange-50 via-white to-orange-50">
+      <ThreeBackground />
       
-      {/* Decorative elements with pastel colors */}
-      <div className="absolute top-20 left-10 w-20 h-20 bg-yellow-100 rounded-full opacity-40" />
-      <div className="absolute top-40 right-20 w-32 h-32 bg-pink-100 rounded-full opacity-40" />
-      <div className="absolute bottom-20 left-1/4 w-24 h-24 bg-purple-100 rounded-full opacity-40" />
-      
-      <div className="relative container mx-auto text-center">
-        <div className="max-w-5xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center px-4 py-2 bg-white rounded-full border border-orange-200 mb-8">
-            <Sparkles className="w-4 h-4 text-orange-500 mr-2" />
-            <span className="text-sm font-medium text-orange-700">Fueling the open source revolution, one coffee at a time</span>
-          </div>
-          
-          {/* Main headline */}
-          <h1 className="text-6xl md:text-7xl font-bold mb-8 leading-tight">
-            <span className="text-orange-600">
-              Where Code Meets
-            </span>
-            <br />
-            <span className="text-4xl md:text-5xl text-gray-800 font-light">
-              Kindness & Coffee
-            </span>
-          </h1>
-          
-          {/* Storytelling copy */}
-          <p className="text-xl md:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
-            Every line of open source code is a love letter to the world. 
-            <span className="text-orange-600 font-semibold"> Now, let the world buy you a coffee</span> — 
-            in USDC, with the magic of Web3 and the warmth of community.
-          </p>
-
-          {/* Call-to-action buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
-            <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-4 text-lg shadow-md hover:shadow-lg transition-all duration-300">
-              <Link href="/projects" className="flex items-center">
-                <Coffee className="mr-2 h-5 w-5" />
-                Buy a Coffee for a Builder
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            
-            <Button size="lg" variant="outline" className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 px-8 py-4 text-lg">
-              <Link href="/register" className="flex items-center">
-                <Heart className="mr-2 h-5 w-5" />
-                Share Your Project
-              </Link>
-            </Button>
-          </div>
-
-          {/* Stats/social proof */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto mb-16">
-            <div className="text-center group">
-              <div className="bg-orange-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Coffee className="h-8 w-8 text-orange-600" />
+      <div className="relative container mx-auto px-4 py-20">
+        <div className="max-w-6xl mx-auto">
+          {/* Main Content - Two Column Layout */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Text Content */}
+            <div className="text-left space-y-8">
+              <div className="inline-flex items-center px-4 py-2 bg-orange-100 rounded-full">
+                <Coffee className="w-4 h-4 text-orange-600 mr-2" />
+                <span className="text-sm font-medium text-orange-800">Fund Open Source with Crypto</span>
               </div>
-              <h3 className="font-bold text-lg mb-2 text-gray-800">Instant USDC</h3>
-              <p className="text-gray-600">
-                No more waiting for payouts. Your coffee money arrives instantly, warm and ready.
+              
+              <h1 className="text-5xl lg:text-6xl font-bold leading-tight">
+                <span className="text-gray-900">Get support for</span>
+                <br />
+                <span className="text-orange-600">your open source work</span>
+              </h1>
+              
+              <p className="text-xl text-gray-600 leading-relaxed">
+                Maintainr makes it easy for anyone to support your open source projects with cryptocurrency. 
+                Get paid in USDC instantly, no middleman, no fees.
               </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/register">
+                  <Button size="lg" className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-8 py-6 text-lg font-semibold shadow-lg hover:shadow-xl transition-all">
+                    <Coffee className="mr-2 h-5 w-5" />
+                    Start Your Page
+                  </Button>
+                </Link>
+                
+                <Link href="/projects">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-gray-300 text-gray-700 hover:bg-gray-50 px-8 py-6 text-lg font-semibold">
+                    Explore Projects
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Trust Indicators */}
+              <div className="flex items-center gap-6 pt-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-green-600" />
+                  <span className="text-sm text-gray-600">Secure & Decentralized</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-yellow-600" />
+                  <span className="text-sm text-gray-600">Instant Payouts</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Visual/Card */}
+            <div className="relative">
+              <div className="bg-white rounded-3xl shadow-2xl p-8 border border-orange-100">
+                <div className="space-y-6">
+                  {/* Profile Header */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-pink-400 rounded-full flex items-center justify-center">
+                      <Coffee className="w-8 h-8 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-xl text-gray-900">Your Project Name</h3>
+                      <p className="text-gray-500">Building amazing things</p>
+                    </div>
+                  </div>
+
+                  {/* Support Section */}
+                  <div className="bg-orange-50 rounded-2xl p-6 space-y-4">
+                    <p className="text-gray-700 font-medium">Support my work</p>
+                    
+                    {/* Amount Options */}
+                    <div className="grid grid-cols-3 gap-3">
+                      {[5, 10, 25].map((amount) => (
+                        <button
+                          key={amount}
+                          className="bg-white border-2 border-orange-200 hover:border-orange-400 rounded-xl py-3 px-4 font-semibold text-gray-900 transition-all hover:shadow-md"
+                        >
+                          ${amount}
+                        </button>
+                      ))}
+                    </div>
+
+                    <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white py-6 text-lg font-semibold">
+                      <Heart className="mr-2 h-5 w-5" />
+                      Support with USDC
+                    </Button>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-2 gap-4 pt-4">
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-gray-900">$1,234</p>
+                      <p className="text-sm text-gray-500">Total Raised</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-bold text-gray-900">89</p>
+                      <p className="text-sm text-gray-500">Supporters</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating Elements */}
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-yellow-200 rounded-full opacity-20 blur-2xl"></div>
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-pink-200 rounded-full opacity-20 blur-2xl"></div>
+            </div>
+          </div>
+
+          {/* Features Section */}
+          <div className="grid md:grid-cols-3 gap-8 mt-24">
+            <div className="text-center space-y-4">
+              <div className="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center mx-auto">
+                <Zap className="w-7 h-7 text-orange-600" />
+              </div>
+              <h3 className="font-bold text-lg text-gray-900">Instant Payments</h3>
+              <p className="text-gray-600">Receive USDC directly to your wallet. No waiting, no delays.</p>
             </div>
             
-            <div className="text-center group">
-              <div className="bg-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Users className="h-8 w-8 text-purple-600" />
+            <div className="text-center space-y-4">
+              <div className="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto">
+                <Shield className="w-7 h-7 text-purple-600" />
               </div>
-              <h3 className="font-bold text-lg mb-2 text-gray-800">Community First</h3>
-              <p className="text-gray-600">
-                Built by maintainers, for maintainers. We get the struggle because we live it too.
-              </p>
+              <h3 className="font-bold text-lg text-gray-900">Secure & Transparent</h3>
+              <p className="text-gray-600">Built on blockchain. Every transaction is verifiable and secure.</p>
             </div>
             
-            <div className="text-center group">
-              <div className="bg-yellow-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Sparkles className="h-8 w-8 text-yellow-600" />
+            <div className="text-center space-y-4">
+              <div className="w-14 h-14 bg-green-100 rounded-2xl flex items-center justify-center mx-auto">
+                <Heart className="w-7 h-7 text-green-600" />
               </div>
-              <h3 className="font-bold text-lg mb-2 text-gray-800">Web3 Magic</h3>
-              <p className="text-gray-600">
-                ENS names, smart contracts, and the future of funding — simplified for humans.
-              </p>
-            </div>
-          </div>
-
-          {/* Personal note */}
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-orange-50 rounded-2xl p-8 border border-orange-100">
-              <p className="text-gray-700 italic leading-relaxed">
-                &quot;Behind every great open source project is a tired developer fueled by caffeine and community. 
-                We&apos;re here to make sure both never run out.&quot;
-              </p>
-              <p className="text-sm text-orange-600 mt-4 font-medium">— The Maintainr Team</p>
+              <h3 className="font-bold text-lg text-gray-900">Community Driven</h3>
+              <p className="text-gray-600">Built by developers, for developers. Join the movement.</p>
             </div>
           </div>
         </div>

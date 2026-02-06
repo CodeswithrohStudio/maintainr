@@ -5,8 +5,10 @@ import { useRouter } from 'next/navigation'
 import { usePrivy } from '@privy-io/react-auth'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Coffee, ExternalLink, Copy, QrCode, Code, Sparkles, Plus } from 'lucide-react'
+import { Modal } from '@/components/ui/modal'
+import { Coffee, ExternalLink, Copy, QrCode, Code, Sparkles, Plus, Download } from 'lucide-react'
 import Link from 'next/link'
+import QRCode from 'react-qr-code'
 
 interface Project {
   _id: string
@@ -28,6 +30,12 @@ export default function DashboardPage() {
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  
+  // Modal states
+  const [embedModalOpen, setEmbedModalOpen] = useState(false)
+  const [qrModalOpen, setQrModalOpen] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [copiedText, setCopiedText] = useState('')
 
   // Get wallet address helper
   const getWalletAddress = () => {
@@ -101,8 +109,60 @@ export default function DashboardPage() {
     }
   }
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedText(text)
+      setTimeout(() => setCopiedText(''), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
+  const getSupportUrl = (project: Project) => {
+    return `${window.location.origin}/support/${project.walletAddress}`
+  }
+
+  const getEmbedCode = (project: Project) => {
+    const supportUrl = getSupportUrl(project)
+    return `<iframe 
+  src="${supportUrl}/widget" 
+  width="300" 
+  height="200" 
+  frameborder="0" 
+  scrolling="no">
+</iframe>`
+  }
+
+  const getButtonCode = (project: Project) => {
+    const supportUrl = getSupportUrl(project)
+    return `<a href="${supportUrl}" target="_blank">
+  <button style="
+    background: linear-gradient(135deg, #f97316, #fb923c);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  ">
+    ☕ Support ${project.projectName}
+  </button>
+</a>`
+  }
+
+  const openEmbedModal = (project: Project) => {
+    setSelectedProject(project)
+    setEmbedModalOpen(true)
+  }
+
+  const openQrModal = (project: Project) => {
+    setSelectedProject(project)
+    setQrModalOpen(true)
   }
 
   if (!ready || loading) {
@@ -276,6 +336,7 @@ export default function DashboardPage() {
                       <Button
                         variant="outline"
                         className="w-full justify-start border-orange-200 hover:bg-orange-50"
+                        onClick={() => openEmbedModal(project)}
                       >
                         <Code className="mr-2 h-4 w-4 text-orange-600" />
                         Get Embed Code
@@ -284,6 +345,7 @@ export default function DashboardPage() {
                       <Button
                         variant="outline"
                         className="w-full justify-start border-orange-200 hover:bg-orange-50"
+                        onClick={() => openQrModal(project)}
                       >
                         <QrCode className="mr-2 h-4 w-4 text-orange-600" />
                         Generate QR Code
@@ -292,7 +354,7 @@ export default function DashboardPage() {
                       <Button
                         variant="outline"
                         className="w-full justify-start border-orange-200 hover:bg-orange-50"
-                        onClick={() => copyToClipboard(`${window.location.origin}/support/${project.walletAddress}`)}
+                        onClick={() => copyToClipboard(getSupportUrl(project))}
                       >
                         <Copy className="mr-2 h-4 w-4 text-orange-600" />
                         Copy Support Link
@@ -312,6 +374,108 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Embed Code Modal */}
+      <Modal
+        isOpen={embedModalOpen}
+        onClose={() => setEmbedModalOpen(false)}
+        title="Embed Your Support Page"
+      >
+        {selectedProject && (
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Support Button</h4>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-xs text-gray-600 overflow-x-auto whitespace-pre-wrap">
+                  {getButtonCode(selectedProject)}
+                </pre>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="mt-2"
+                onClick={() => copyToClipboard(getButtonCode(selectedProject))}
+              >
+                {copiedText === getButtonCode(selectedProject) ? '✓ Copied!' : 'Copy Code'}
+              </Button>
+            </div>
+
+            <div>
+              <h4 className="text-sm font-semibold text-gray-700 mb-2">Embed Widget</h4>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <pre className="text-xs text-gray-600 overflow-x-auto whitespace-pre-wrap">
+                  {getEmbedCode(selectedProject)}
+                </pre>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                className="mt-2"
+                onClick={() => copyToClipboard(getEmbedCode(selectedProject))}
+              >
+                {copiedText === getEmbedCode(selectedProject) ? '✓ Copied!' : 'Copy Code'}
+              </Button>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>How to use:</strong> Copy the code above and paste it into your website, README, or blog. The button will link to your support page where people can send you tips!
+              </p>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* QR Code Modal */}
+      <Modal
+        isOpen={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        title="QR Code for Your Support Page"
+      >
+        {selectedProject && (
+          <div className="space-y-6">
+            <div className="flex justify-center">
+              <div className="bg-white p-4 rounded-lg shadow-md">
+                <QRCode
+                  value={getSupportUrl(selectedProject)}
+                  size={256}
+                  level="H"
+                  bgColor="#ffffff"
+                  fgColor="#000000"
+                />
+              </div>
+            </div>
+
+            <div className="text-center">
+              <p className="text-sm text-gray-600 mb-4">
+                Scan this QR code to visit {selectedProject.projectName}&apos;s support page
+              </p>
+              <Button
+                onClick={() => {
+                  const canvas = document.querySelector('canvas')
+                  if (canvas) {
+                    const url = canvas.toDataURL('image/png')
+                    const link = document.createElement('a')
+                    link.download = `${selectedProject.projectName.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`
+                    link.href = url
+                    link.click()
+                  }
+                }}
+                className="bg-orange-500 hover:bg-orange-600 text-white"
+              >
+                <Download className="mr-2 h-4 w-4" />
+                Download QR Code
+              </Button>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <p className="text-sm text-blue-700">
+                <strong>How to use:</strong> Save this QR code and add it to your presentations, business cards, or print materials. People can scan it to quickly access your support page!
+              </p>
+            </div>
+          </div>
+        )}
+      </Modal>
     </div>
   )
 }

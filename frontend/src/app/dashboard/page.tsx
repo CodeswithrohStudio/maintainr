@@ -65,6 +65,8 @@ export default function DashboardPage() {
       setLoading(true)
       const walletAddress = getWalletAddress()
       
+      console.log('Dashboard: Wallet address:', walletAddress)
+      
       if (!walletAddress) {
         setError('No wallet address found')
         return
@@ -78,12 +80,18 @@ export default function DashboardPage() {
       }
 
       const allProjects = await response.json()
+      console.log('Dashboard: All projects:', allProjects)
       
       // Filter projects by wallet address
       const userProjects = allProjects.filter(
-        (project: Project) => project.walletAddress.toLowerCase() === walletAddress.toLowerCase()
+        (project: Project) => {
+          console.log('Dashboard: Checking project:', project.walletAddress, 'against:', walletAddress)
+          return project.walletAddress && walletAddress && 
+            project.walletAddress.toLowerCase() === walletAddress.toLowerCase()
+        }
       )
       
+      console.log('Dashboard: User projects:', userProjects)
       setProjects(userProjects)
     } catch (err) {
       console.error('Error fetching projects:', err)

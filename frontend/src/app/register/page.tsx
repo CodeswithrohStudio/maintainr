@@ -28,8 +28,25 @@ export default function RegisterPage() {
   const [success, setSuccess] = useState(false)
 
   useEffect(() => {
-    if (ready && authenticated && user?.wallet) {
-      const walletAddress = user.wallet.address
+    if (ready && authenticated && user) {
+      // Privy can have embedded wallets or linked wallets
+      // Try to get the wallet address from various sources
+      let walletAddress = ''
+      
+      // Check for embedded wallet
+      if (user.wallet?.address) {
+        walletAddress = user.wallet.address
+      }
+      // Check for linked wallets array
+      else if (user.linkedAccounts) {
+        const walletAccount = user.linkedAccounts.find(
+          (account) => account.type === 'wallet'
+        )
+        if (walletAccount && 'address' in walletAccount) {
+          walletAddress = (walletAccount as { address: string }).address
+        }
+      }
+
       if (walletAddress) {
         setFormData(prev => ({
           ...prev,
@@ -78,7 +95,7 @@ export default function RegisterPage() {
       // Validate splits sum to 10000 (100%)
       const totalSplits = formData.splits.reduce((sum, split) => sum + split, 0)
       if (totalSplits !== 10000) {
-        setError('Coffee shares should add up to 100% ☕')
+        setError('Revenue shares must add up to 100%')
         return
       }
 
@@ -94,9 +111,16 @@ export default function RegisterPage() {
         return
       }
 
-      // Get wallet address from Privy
-      if (!user?.wallet?.address) {
+      // Get wallet address from Privy - check if user is authenticated
+      if (!authenticated || !user) {
         setError('Please connect your wallet first')
+        return
+      }
+
+      // Get the wallet address from the first recipient (which is pre-filled)
+      const walletAddress = formData.recipients[0]
+      if (!walletAddress || !walletAddress.trim()) {
+        setError('Wallet address is required')
         return
       }
 
@@ -107,7 +131,7 @@ export default function RegisterPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          walletAddress: user.wallet.address,
+          walletAddress: walletAddress,
           projectName: formData.projectName,
           bio: formData.bio,
           githubUrl: formData.githubUrl,
@@ -273,10 +297,10 @@ export default function RegisterPage() {
               {currentStep === 2 && 'Set up payment details'}
               {currentStep === 3 && 'Review and launch'}
             </CardTitle>
-            {user?.wallet?.address && (
+            {formData.recipients[0] && (
               <p className="text-sm text-gray-500 mt-2">
                 Creating page for <span className="font-semibold text-orange-600 font-mono">
-                  {user.wallet.address.slice(0, 6)}...{user.wallet.address.slice(-4)}
+                  {formData.recipients[0].slice(0, 6)}...{formData.recipients[0].slice(-4)}
                 </span>
               </p>
             )}

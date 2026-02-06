@@ -8,6 +8,30 @@ import { usePrivy } from '@privy-io/react-auth'
 export function Header() {
   const { ready, authenticated, user, login, logout } = usePrivy()
 
+  // Get wallet address from Privy user
+  const getWalletAddress = () => {
+    if (!user) return null
+    
+    // Check embedded wallet
+    if (user.wallet?.address) {
+      return user.wallet.address
+    }
+    
+    // Check linked accounts for wallet type
+    if (user.linkedAccounts) {
+      const walletAccount = user.linkedAccounts.find(
+        (account) => account.type === 'wallet'
+      )
+      if (walletAccount && 'address' in walletAccount) {
+        return (walletAccount as { address: string }).address
+      }
+    }
+    
+    return null
+  }
+
+  const walletAddress = getWalletAddress()
+
   return (
     <header className="sticky top-0 z-50 bg-orange-50 border-b border-orange-200">
       <div className="container mx-auto px-4 py-4">
@@ -58,15 +82,17 @@ export function Header() {
                     Dashboard
                   </Button>
                 </Link>
-                <Button 
-                  variant="outline" 
-                  className="border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center space-x-2"
-                >
-                  <Wallet className="h-4 w-4" />
-                  <span className="hidden sm:inline font-mono text-sm">
-                    {user.wallet?.address?.slice(0, 6)}...{user.wallet?.address?.slice(-4)}
-                  </span>
-                </Button>
+                {walletAddress && (
+                  <Button 
+                    variant="outline" 
+                    className="border-orange-200 text-orange-700 hover:bg-orange-100 flex items-center space-x-2"
+                  >
+                    <Wallet className="h-4 w-4" />
+                    <span className="hidden sm:inline font-mono text-sm">
+                      {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+                    </span>
+                  </Button>
+                )}
                 <Button 
                   onClick={logout}
                   variant="ghost"

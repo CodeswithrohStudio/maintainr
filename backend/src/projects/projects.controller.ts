@@ -13,13 +13,8 @@ export class ProjectsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  async registerProject(@Body() body: any, @Req() req: Request) {
-    const user = req.user as any;
-    return this.projectsService.registerProject({
-      ...body,
-      ownerId: user.sub,
-    });
+  async registerProject(@Body() body: any) {
+    return this.projectsService.registerProject(body);
   }
 
   @Get(':handle')

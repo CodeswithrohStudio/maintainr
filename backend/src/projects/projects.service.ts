@@ -19,8 +19,12 @@ export class ProjectsService {
   }
 
   async registerProject(data: {
-    ownerId: string;
-    githubRepoUrl: string;
+    walletAddress: string;
+    projectName: string;
+    bio?: string;
+    githubUrl?: string;
+    twitterUrl?: string;
+    websiteUrl?: string;
     recipients: string[];
     splits: number[];
     ensName?: string;
@@ -32,13 +36,13 @@ export class ProjectsService {
     const project = await this.create({
       ...data,
       projectIdOnchain,
+      ownerId: data.walletAddress, // Use wallet address as owner ID for backward compatibility
     });
 
     return project;
   }
 
   private async registerOnChain(data: {
-    githubRepoUrl: string;
     recipients: string[];
     splits: number[];
     ensName?: string;
@@ -53,15 +57,16 @@ export class ProjectsService {
   }
 
   async findByHandle(handle: string): Promise<Project | null> {
-    // Extract handle from github repo URL or match by ensName
+    // Match by wallet address, project name, or ensName
     return this.projectModel
       .findOne({
         $or: [
-          { githubRepoUrl: { $regex: handle, $options: 'i' } },
+          { walletAddress: { $regex: handle, $options: 'i' } },
+          { projectName: { $regex: handle, $options: 'i' } },
           { ensName: handle },
+          { githubRepoUrl: { $regex: handle, $options: 'i' } }, // Legacy support
         ],
       })
-      .populate('ownerId')
       .exec();
   }
 

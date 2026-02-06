@@ -6,10 +6,22 @@ export type ProjectDocument = Project & Document;
 @Schema()
 export class Project extends Document {
   @Prop({ required: true })
-  ownerId: string;
+  walletAddress: string;
 
   @Prop({ required: true })
-  githubRepoUrl: string;
+  projectName: string;
+
+  @Prop()
+  bio: string;
+
+  @Prop()
+  githubUrl: string;
+
+  @Prop()
+  twitterUrl: string;
+
+  @Prop()
+  websiteUrl: string;
 
   @Prop()
   projectIdOnchain: number;
@@ -28,6 +40,13 @@ export class Project extends Document {
 
   @Prop({ default: Date.now })
   createdAt: Date;
+
+  // Legacy field for backward compatibility
+  @Prop()
+  ownerId: string;
+
+  @Prop()
+  githubRepoUrl: string;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);
